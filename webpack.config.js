@@ -1,9 +1,21 @@
-// cnpm i mini-css-extract-plugin webpack-fix-style-only-entries css-loader webpack webpack-cli sass-loader node-sass webpack-glob-entry -D
+/* cnpm i 
+  webpack webpack-cli
+  webpack-glob-entry
+  webpack-fix-style-only-entries 
+  css-loader
+  sass-loader node-sass
+  postcss-loader autoprefixer
+  mini-css-extract-plugin
+  optimize-css-assets-webpack-plugin
+  -D 
+*/
 const path = require('path')
 const rootPath = path.resolve(__dirname,'./'); // 设置路径
-const glob = require('webpack-glob-entry')  
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const glob = require('webpack-glob-entry'); // 路径模糊匹配
+const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // css转义插件
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin'); // css压缩插件 - 注意顺序：先转义再压缩
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries'); // 修正插件-删除打包后的空js文件
+
 
 // CSS入口配置
 const CSS_PATH_CONFIG = {
@@ -38,12 +50,13 @@ module.exports = {
     rules: [
       {
         test: /\.scss$/,
-        use:[MiniCssExtractPlugin.loader, 'css-loader','sass-loader']
+        use:[MiniCssExtractPlugin.loader, 'css-loader','sass-loader','postcss-loader']
       }
     ]
   },
   plugins: [
     new FixStyleOnlyEntriesPlugin(),
+    new OptimizeCSSAssetsPlugin({}),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: "[id].css"
